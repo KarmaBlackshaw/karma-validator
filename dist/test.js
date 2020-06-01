@@ -1,6 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const validate = require('./index');
+const index_1 = __importDefault(require("./index"));
 const schema = {
     firstName: {
         type: 'string',
@@ -23,5 +26,5 @@ const objectValue = {
     firstName: 'asdf',
     secondName: ['cat'],
 };
-const errors = validate(schema, objectValue);
+const errors = index_1.default(schema, objectValue);
 console.log(errors);

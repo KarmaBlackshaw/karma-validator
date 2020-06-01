@@ -1,5 +1,5 @@
 export { };
-const validate = require('./index')
+import validate from './index';
 
 const schema = {
   firstName: {

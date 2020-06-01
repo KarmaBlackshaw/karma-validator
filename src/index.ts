@@ -92,4 +92,4 @@ const validate = (schema: object, objectValue: anyObject) => {
   }, {})
 }
 
-module.exports = validate
+export default validate

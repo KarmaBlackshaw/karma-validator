@@ -76,4 +76,4 @@ const validate = (schema, objectValue) => {
         return validation[curr].length ? Object.assign(Object.assign({}, acc), { [curr]: validation[curr] }) : acc;
     }, {});
 };
-module.exports = validate;
+exports.default = validate;
