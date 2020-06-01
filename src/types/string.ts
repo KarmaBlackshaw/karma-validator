@@ -1,5 +1,5 @@
 export { }
-const common = require('./common')
+import common from './common'
 
 // ==============================================
 // MESSAGES
@@ -22,32 +22,34 @@ const errorHOF: errorHOF = (key, label) => common.error(key, label, { source: me
 const rules: ruleSet = {
   ...common.rules,
 
-  base(value, label, param) {
+  base (value, label, param) {
     return typeof value === 'string' || errorHOF('base', label)
   },
 
-  isUpper(value, label, param) {
+  isUpper (value, label, param) {
     return value.toUpperCase() === value || errorHOF('isUpper', label)
   },
 
-  isLower(value, label, param) {
+  isLower (value, label, param) {
     return value.toLowerCase() === value || errorHOF('isLower', label)
   },
 
-  length(value, label, param) {
+  length (value, label, param) {
     if (!param) return common.error('missingComparator', 'Length', { developer: true })
     return value.length === param || errorHOF('length', [label, param])
   },
 
-  min(value, label, param) {
+  min (value, label, param) {
     if (!param) return common.error('missingComparator', 'Min', { developer: true })
     return value.length >= param || errorHOF('min', [label, param])
   },
 
-  max(value, label, param) {
+  max (value, label, param) {
     if (!param) return common.error('missingComparator', 'Max', { developer: true })
     return value.length <= param || errorHOF('max', [label, param])
   }
 }
 
-module.exports = { rules, messages }
+const ruleExport = { rules, messages }
+
+export default ruleExport

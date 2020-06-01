@@ -10,10 +10,10 @@ const messages = {
 }
 
 const developerMessage: { [index: string]: string } = {
-  // Helper Error Messages
   missingComparator: '@1 needs a value to reference',
   paramArray: '@1 is expected to receive an array',
-  paramNumber: '@1 is expected to receive a number'
+  paramNumber: '@1 is expected to receive a number',
+  paramUndefined: '@1 is expects a value to be defined',
 }
 
 // ==============================================
@@ -24,9 +24,9 @@ const developerMessage: { [index: string]: string } = {
  * Tip: Wrap in error HOF to follow DRY Priniciple
  */
 const error: error = (key, label, options) => {
-  const rawMessage = options.developer === true
+  const rawMessage: string = options.developer === true
     ? developerMessage[key]
-    : options.source[key]
+    : options.source[key] || ''
 
   if (!rawMessage) {
     return console.log(`${key} not found!`)
@@ -36,9 +36,9 @@ const error: error = (key, label, options) => {
     return rawMessage.replace(/@1/, label)
   }
 
-  return label.reduce((acc, val, key) => {
+  return label.reduce((acc, val, labelKey) => {
     // tslint:disable-next-line:no-parameter-reassignment
-    const regex = new RegExp(`@${++key}`, 'g')
+    const regex = new RegExp(`@${++labelKey}`, 'g')
     return acc.replace(regex, val)
   }, rawMessage)
 }
@@ -46,21 +46,31 @@ const error: error = (key, label, options) => {
 // ==============================================
 // RULES
 // ==============================================
-const errorHOF: errorHOF = (key, label) => common.error(key, label, { source: messages })
+const errorHOF: errorHOF = (key, label) => error(key, label, { source: messages })
 const rules: ruleSet = {
-  required(value, label, param) {
+  required (value, label, param) {
     return (value && value.toString().trim().length > 0) || errorHOF('required', label)
   },
 
-  allow(value, label, param) {
-    if (!Array.isArray(param)) return common.error('paramArray', label, { developer: true })
-    return param.some(x => x === value) || errorHOF('allow', [label, param])
+  allow (value, label, param) {
+    if (!Array.isArray(param)) {
+      return error('paramArray', label, { developer: true })
+    }
+    return param.some((x: any) => x === value) || errorHOF('allow', [label, param])
   },
 
-  disallow(value, label, param) {
-    if (!Array.isArray(param)) return common.error('paramArray', label, { developer: true })
-    return !param.some(x => x === value) || errorHOF('disallow', [label, param])
+  disallow (value, label, param) {
+    if (!Array.isArray(param)) {
+      return error('paramArray', label, { developer: true })
+    }
+    return !param.some((x: any) => x === value) || errorHOF('disallow', [label, param])
+  },
+
+  optional (value, label, param) {
+    return true
   }
 }
 
-module.exports = { error, rules, messages }
+const ruleExport: ruleExportCommon = { error, rules, messages }
+
+export default ruleExport

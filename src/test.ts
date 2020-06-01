@@ -6,20 +6,25 @@ const schema = {
     type: 'string',
     min: 4,
     allow: ['asdf'],
-    isUpper: true,
     label: 'First name'
   },
 
   secondName: {
-    type: 'number',
-    greater: 4,
+    type: 'array',
+    has: 'dog',
     label: 'Second name'
+  },
+
+  dog: {
+    type: 'string',
+    min: 5,
+    optional: true,
   }
 }
 
 const objectValue = {
   firstName: 'asdf',
-  secondName: 'false'
+  secondName: ['cat'],
 }
 
 const errors = validate(schema, objectValue)

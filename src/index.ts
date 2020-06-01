@@ -1,14 +1,19 @@
 export { };
 
+import typeString from './types/string';
+import typeNumber from './types/number';
+import typeBoolean from './types/boolean';
+import typeArray from './types/array';
+
 const types: primitiveRequireTypes = {
-  string: require('./types/string'),
-  number: require('./types/number'),
-  boolean: require('./types/boolean')
+  string: typeString,
+  number: typeNumber,
+  boolean: typeBoolean,
+  array: typeArray
 }
 
-const RULE_SETS = Object.keys(types).reduce((acc: anyObject, curr: string) => {
-  acc[curr] = types[curr].rules
-  return acc
+const RULE_SETS: ruleSet = Object.keys(types).reduce((acc, curr) => {
+  return { ...acc, [curr]: types[curr].rules }
 }, {})
 
 const pushError = (validationMessage: any, array: string[]) => {
@@ -36,7 +41,7 @@ const validate = (schema: object, objectValue: anyObject) => {
   }
 
   // Validate keys
-  const validation = Object.entries(schema).reduce((errors, [property, rulesObject]) => {
+  const validation = Object.entries(schema).reduce((errors: stringObject, [property, rulesObject]) => {
     const value = objectValue[property]
     let validationMessage
     errors[property] = []
@@ -46,14 +51,23 @@ const validate = (schema: object, objectValue: anyObject) => {
       throw Error('Validation key: type is missing')
     }
 
-    // Check basic type first
     const { type, ...restOfRulesObject } = rulesObject
-    const baseValidationMessage = RULE_SETS[type].base(value, rulesObject.label || property, null)
+    const ruleSet = RULE_SETS[type]
+
+    // Check if property is optional
+    // Perform other operations if value is not empty
+    if (restOfRulesObject.optional) {
+      if (value === undefined || value === '') {
+        return errors
+      }
+    }
+
+    // Check basic type first
+    const baseValidationMessage = ruleSet.base(value, rulesObject.label || property, null)
     errors[property] = pushError(baseValidationMessage, errors[property])
 
     const rulePropertyValidExceptions = ['label']
     Object.entries(restOfRulesObject).forEach(([ruleProperty, ruleValue]) => {
-      const ruleSet = RULE_SETS[type]
 
       // Check if rule does not exist in rules sets or in excempted rules
       if (!ruleSet[ruleProperty] && !rulePropertyValidExceptions.includes(ruleProperty)) {

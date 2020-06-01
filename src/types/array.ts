@@ -5,9 +5,8 @@ import common from './common'
 // MESSAGES
 // ==============================================
 const messages = {
-  base: '@1 must be a boolean',
-  truthy: '@1 must be true',
-  falsy: '@1 must be false'
+  base: '@1 must be an array',
+  has: '@1 expects @2 to be present in the array.'
 }
 
 // Handle edge cases for common rules which do not apply to boolean validation
@@ -24,25 +23,16 @@ const rules: ruleSet = {
   ...validCommonRules,
 
   base (value, label, param) {
-    return typeof value === 'boolean' ||
-      ['true', 'false'].includes(value.toLowerCase()) ||
-      errorHOF('base', label)
+    return Array.isArray(value) || errorHOF('base', label)
   },
 
-  truthy (value, label, param) {
-    if (typeof value === 'string') {
-      value = value.toLowerCase()
+
+  has (value, label, param) {
+    if (param === undefined || typeof param === 'undefined') {
+      return common.error('paramUndefined', label, { developer: true })
     }
 
-    return value === 'true' || value === true || errorHOF('truthy', label)
-  },
-
-  falsy (value, label, param) {
-    if (typeof value === 'string') {
-      value = value.toLowerCase()
-    }
-
-    return value === 'false' || value === false || errorHOF('falsy', label)
+    return value.includes(param) || errorHOF('has', [label, param])
   }
 }
 

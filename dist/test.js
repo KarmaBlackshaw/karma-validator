@@ -1,23 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var validate = require('./index');
-var schema = {
+const validate = require('./index');
+const schema = {
     firstName: {
         type: 'string',
         min: 4,
         allow: ['asdf'],
-        isUpper: true,
         label: 'First name'
     },
     secondName: {
-        type: 'number',
-        greater: 4,
+        type: 'array',
+        has: 'dog',
         label: 'Second name'
+    },
+    dog: {
+        type: 'string',
+        min: 5,
+        optional: true,
     }
 };
-var objectValue = {
+const objectValue = {
     firstName: 'asdf',
-    secondName: 'false'
+    secondName: ['cat'],
 };
-var errors = validate(schema, objectValue);
+const errors = validate(schema, objectValue);
 console.log(errors);
