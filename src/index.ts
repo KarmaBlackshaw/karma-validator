@@ -51,7 +51,7 @@ const validate = (schema: object, objectValue: anyObject) => {
 
     const hasType = Object.keys(rulesObject).find(x => x === 'type')
     if (!hasType) {
-      throw Error('Validation key: type is missing')
+      return { schema: errorHOF('  missingType: ', []) }
     }
 
     const { type, ...restOfRulesObject } = rulesObject
@@ -74,7 +74,7 @@ const validate = (schema: object, objectValue: anyObject) => {
 
       // Check if rule does not exist in rules sets or in excempted rules
       if (!ruleSet[ruleProperty] && !rulePropertyValidExceptions.includes(ruleProperty)) {
-        throw Error(`${ruleProperty} is not a valid rule for type ${type}!`)
+        return { schema: errorHOF('invalidRule', [ruleProperty, type]) }
       }
 
       // Check if rule is not in the excempted rules
