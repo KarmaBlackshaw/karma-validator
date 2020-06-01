@@ -8,6 +8,8 @@ const messages = {
   allow: '@1 only allows @2',
   disallow: '@1 does not allow the following values @2',
   unknownKey: 'Unknown key `@1` detected',
+  missingType: 'Validation key `type` is missing',
+  invalidRule: '@1 is not a valid rule for type @2'
 }
 
 const developerMessage: { [index: string]: string } = {
