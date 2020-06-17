@@ -33,7 +33,7 @@ const rules: ruleSet = {
     }
 
     return value.includes(param) || errorHOF('has', [label, param])
-  }
+  },
 }
 
 const ruleExport: ruleExport = { rules, messages }
