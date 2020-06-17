@@ -24,7 +24,6 @@ type error = (
 
 
 interface ruleSet {
-  base: rule,
   [key: string]: rule
 }
 
@@ -38,6 +37,3 @@ interface ruleExportCommon {
   messages: stringObject,
   error: error
 }
-
-
-
