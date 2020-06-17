@@ -9,6 +9,7 @@ const messages = {
   disallow: '@1 does not allow the following values @2',
   unknownKey: 'Unknown key `@1` detected',
   missingType: 'Validation key `type` is missing',
+  missingValue: 'Value for @1 is missing',
   invalidRule: '@1 is not a valid rule for type @2'
 }
 
@@ -29,7 +30,7 @@ const developerMessage: { [index: string]: string } = {
 const error: error = (key, label, options) => {
   const rawMessage: string = options.developer === true
     ? developerMessage[key]
-    : options.source[key] || ''
+    : (options.source && options.source[key]) || ''
 
   if (!rawMessage) {
     return console.log(`${key} not found!`)
