@@ -14,9 +14,10 @@ const types: primitiveRequireTypes = {
   array: typeArray
 }
 
-const RULE_SETS: ruleSet = Object.keys(types).reduce((acc, curr) => {
-  return { ...acc, [curr]: types[curr].rules }
-}, {})
+const newLocal = Object.keys(types).reduce((acc, curr) => {
+  return { ...acc, [curr]: types[curr].rules };
+}, {});
+const RULE_SETS = newLocal
 
 const pushError = (validationMessage: any, array: string[]) => {
   return typeof validationMessage !== 'boolean'
@@ -44,7 +45,7 @@ const validate = (schema: object, objectValue: anyObject) => {
   }
 
   // Validate keys
-  const validation = Object.entries(schema).reduce((errors: stringObject, [property, rulesObject]) => {
+  const validation = Object.entries(schema).reduce((errors: anyObject, [property, rulesObject]) => {
     const value = objectValue[property]
     let validationMessage
     errors[property] = []
@@ -55,14 +56,14 @@ const validate = (schema: object, objectValue: anyObject) => {
     }
 
     const { type, ...restOfRulesObject } = rulesObject
-    const ruleSet = RULE_SETS[type]
+    const ruleSet = (RULE_SETS as any)[type]
 
     // Check if property is optional
     // Perform other operations if value is not empty
-    if (restOfRulesObject.optional) {
-      if (value === undefined || value === '') {
-        return errors
-      }
+    if (value === undefined || value === '' || value === null) {
+      return restOfRulesObject.optional
+        ? errors
+        : { schema: errorHOF('missingValue', property) }
     }
 
     // Check basic type first
