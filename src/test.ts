@@ -6,13 +6,15 @@ const schema = {
     type: 'string',
     min: 4,
     allow: ['asdf'],
-    label: 'First name'
+    label: 'First name',
+    required: true
   },
 
   secondName: {
     type: 'array',
     has: 'dog',
-    label: 'Second name'
+    label: 'Second name',
+    optional: true
   },
 
   dog: {
@@ -23,8 +25,7 @@ const schema = {
 }
 
 const objectValue = {
-  firstName: 'asdf',
-  hey: 'asdf'
+  dog: 'sdaf'
 }
 
 const errors = validate(schema, objectValue)
